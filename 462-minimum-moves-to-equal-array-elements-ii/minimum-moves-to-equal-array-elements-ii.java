@@ -1,28 +1,42 @@
 class Solution {
     public int minMoves2(int[] nums) {
-        TreeMap<Integer,Integer> tp = new TreeMap<>();
-        for(int i : nums){
-            tp.put(i,tp.getOrDefault(i,0)+1);
-        }
-        int key=0;
-        int l = nums.length/2;
-        for(int i : tp.keySet()){
-            int x = tp.get(i);
-            if(x<=l){
-                l=l-x;
-                tp.put(i,0);
-            }
-            else{
-                l=x-l;
-                tp.put(i,l);
-                key=i;
-                break;
-            }
-        }
+        int n = nums.length;
+        int[] temp = new int[n];
+        sort(nums,temp,0,n-1);
+        int k = nums[n/2];
         int ans=0;
         for(int i : nums){
-            ans+=Math.abs(key-i);
+            ans+=Math.abs(k-i);
         }
         return ans;
+    }
+    public void sort(int[] nums, int[] temp, int l, int r){
+        if(l>=r){
+            return;
+        }
+        int mid = l+(r-l)/2;
+        sort(nums,temp,l,mid);
+        sort(nums,temp,mid+1,r);
+        merge(nums,temp,l,mid,r);
+    }
+    public void merge(int[] nums, int[] temp, int l, int mid, int r){
+        int i=l,j=mid+1,k=l;
+        while(i<=mid&&j<=r){
+            if(nums[i]<=nums[j]){
+                temp[k++]=nums[i++];
+            }
+            else{
+                temp[k++]=nums[j++];
+            }
+        }
+        while(i<=mid){
+            temp[k++]=nums[i++];
+        }
+        while(j<=r){
+            temp[k++]=nums[j++];
+        }
+        for(int t=l;t<=r;t++){
+            nums[t]=temp[t];
+        }
     }
 }
